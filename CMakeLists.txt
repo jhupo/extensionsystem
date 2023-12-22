@@ -4,11 +4,12 @@ include(cmake/commondefs.cmake)
 
 project(extension)
 
-search_file(${top_include_dir} TARGET_FILES)
+add_definitions(-DEXTENSION_LIBRARY)
 
-set(CMAKE_BINARY_DIR ${top_builddir})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${top_binary_dir})
 
-set(EXECUTABLE_OUTPUT_PATH ${top_binary_dir})
+include_directories(${top_include_dir})
 
+search_file(${top_srcdir} TARGET_FILES)
 
-
+add_library(${PROJECT_NAME} SHARED ${TARGET_FILES})
