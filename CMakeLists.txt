@@ -1,8 +1,10 @@
 cmake_minimum_required(VERSION 2.8)
 
+set(project_name extension)
+
 include(cmake/commondefs.cmake)
 
-project(extension)
+project(${project_name})
 
 add_definitions(-DEXTENSION_LIBRARY)
 
@@ -12,4 +14,6 @@ include_directories(${top_include_dir})
 
 search_file(${top_srcdir} TARGET_FILES)
 
-add_library(${PROJECT_NAME} SHARED ${TARGET_FILES})
+add_library(${project_name} SHARED ${TARGET_FILES})
+
+target_link_libraries(${project_name} ${thirdparty_libs})

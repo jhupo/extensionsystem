@@ -43,3 +43,15 @@ set(cmake_cxx_flags_relwithdebinfo "$ENV{CXXFLAGS} -Wall -O2 -g -DNDEBUG")
 set(cmake_c_flags_debug "$ENV{CFLAGS} -O0 -Wall -g -ggdb")
 set(cmake_c_flags_release "$ENV{CFLAGS} -DNODEBUG -O2 -Wall")
 set(cmake_c_flags_relwithdebinfo "$ENV{CXXFLAGS} -Wall -O2 -g -DNDEBUG")
+
+
+set(thirdparty_libs 
+                    boost_thread
+                    boost_chrono
+                    boost_log
+                    boost_log_setup
+                    boost_regex
+                    boost_filesystem
+                    m
+                    dl
+                    pthread)
