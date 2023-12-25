@@ -65,6 +65,10 @@ namespace extension{
                 {return strcmp(_1,_2.c_str()) == 0;}
                 bool operator()(const std::string& _1, const char* _2)
                 {return strcmp(_1.c_str(),_2) == 0;}
+                bool operator()(const std::string& _1, const std::string& _2)
+                {return _1 == _2;}
+                bool operator()(const basic_variant_container_or_single_t& _1, const basic_variant_container_or_single_t& _2)
+                {return false;}
             };
 
             BasicVariant(const basic_variant_container_or_single_t& variant = DECL_EQ_NULLPTR);
