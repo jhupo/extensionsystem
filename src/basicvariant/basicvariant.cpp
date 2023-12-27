@@ -106,7 +106,7 @@ namespace extension{
         BasicVariant::BasicVariant(const char* var)
             : variant_t(variant_assign_visitor()(var))
         {
-            std::cout<<var<<std::endl;
+            
         }
 
         BasicVariant::BasicVariant(const unsigned char* var)
@@ -172,7 +172,7 @@ namespace extension{
         BasicVariant::BasicVariant(const bool& var)
             : variant_t(static_cast<bool>(var))
         {
-            std::cout<<"--"<<var<<std::endl;
+
         }
 
         BasicVariant::BasicVariant(const basic_variant_format_t& var)

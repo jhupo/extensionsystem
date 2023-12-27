@@ -1,13 +1,13 @@
 #include <iostream>
 
-#include <basicvariant/basicvariant.h>
+#include <logger/logger.h>
+
 
 int main(int argc, char** argv)
 {
-    extension::core::variant_t var("123");
+    extension::logger::init_logger_environment();
 
-    std::cout << "Hello, World!" << var.which() <<std::endl;
-
+    LOG_INF(logger_main) << " test";
 
     return 0;
 }

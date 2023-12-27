@@ -4,9 +4,7 @@ set(top_binary_dir ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 set(top_builddir ${CMAKE_CURRENT_SOURCE_DIR}/build)
 set(top_include_dir ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(top_srcdir ${CMAKE_CURRENT_SOURCE_DIR}/src)
-set(top_testdir ${CMAKE_CURRENT_SOURCE_DIR}/test)
-set(top_3rdpartydir ${CMAKE_CURRENT_SOURCE_DIR}/3rdparty)
-
+set(top_examples ${CMAKE_CURRENT_SOURCE_DIR}/examples)
 
 function(search_file dir result)
     file(GLOB_RECURSE __FILES_TARGET__
@@ -46,12 +44,12 @@ set(cmake_c_flags_relwithdebinfo "$ENV{CXXFLAGS} -Wall -O2 -g -DNDEBUG")
 
 
 set(thirdparty_libs 
-                    boost_thread
-                    boost_chrono
-                    boost_log
-                    boost_log_setup
-                    boost_regex
-                    boost_filesystem
+                    boost_chrono 
+                    boost_thread 
+                    boost_log 
+                    boost_log_setup  
+                    boost_regex 
+                    boost_filesystem 
                     m
                     dl
                     pthread)
