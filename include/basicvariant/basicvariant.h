@@ -51,7 +51,7 @@ namespace extension{
 
             template<typename T>
             inline T variant_value(){
-                variant_value<T>(*this);
+                return variant_value<T>(*this);
             }
 
         public:
@@ -68,6 +68,36 @@ namespace extension{
 
 #define basic_varinat_null variant_t((void*)NULL)
 
+        template<>   
+        void* BasicVariant::variant_value<void*>(const BasicVariant &var);
+        template<>
+        char BasicVariant::variant_value<char>(const BasicVariant &var);
+        template<>
+        unsigned char BasicVariant::variant_value<unsigned char>(const BasicVariant &var);
+        template<>
+        char* BasicVariant::variant_value<char*>(const BasicVariant &var);
+        template<>
+        unsigned char* BasicVariant::variant_value<unsigned char*>(const BasicVariant &var);
+        template<>
+        short BasicVariant::variant_value<short>(const BasicVariant &var);
+        template<>
+        unsigned short BasicVariant::variant_value<unsigned short>(const BasicVariant &var);
+        template<>
+        int BasicVariant::variant_value<int>(const BasicVariant &var);
+        template<>
+        unsigned int BasicVariant::variant_value<unsigned int>(const BasicVariant &var);
+        template<>
+        long BasicVariant::variant_value<long>(const BasicVariant &var);
+        template<>
+        float BasicVariant::variant_value<float>(const BasicVariant& var);
+        template<>
+        double BasicVariant::variant_value<double>(const BasicVariant& var);
+        template<>
+        std::string BasicVariant::variant_value<std::string>(const BasicVariant& var);
+        template<>
+        bool BasicVariant::variant_value<bool>(const BasicVariant& var);
+        template<>
+        basic_variant_format_t BasicVariant::variant_value<basic_variant_format_t>(const BasicVariant& var);
     }
 
 }

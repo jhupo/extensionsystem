@@ -75,9 +75,11 @@ namespace extension{
             {
                 bool operator()(const variant_t& src)const{
                     if(BasicVariant::variant_char_ptr == src.which()){
-                        delete[] boost::get<char*>(src);
+                        char* buffer = boost::get<char*>(src);
+                        delete[] buffer;
                     }else if(BasicVariant::variant_uchar_ptr == src.which()){
-                        delete[] boost::get<unsigned char*>(src);
+                        unsigned char* buffer = boost::get<unsigned char*>(src);
+                        delete[] buffer;
                     }
                     return true;
                 }
@@ -104,15 +106,15 @@ namespace extension{
         }
 
         BasicVariant::BasicVariant(const char* var)
-            : variant_t(variant_assign_visitor()(var))
+            : variant_t(const_cast<char*>(var))
         {
             
         }
 
         BasicVariant::BasicVariant(const unsigned char* var)
-            : variant_t(variant_assign_visitor()(var))
+            : variant_t(const_cast<unsigned char*>(var))
         {
-
+            
         }
 
         BasicVariant::BasicVariant(const short& var)
@@ -189,7 +191,7 @@ namespace extension{
 
         BasicVariant::~BasicVariant()
         {
-            boost::apply_visitor(variant_smart_deleter_visitor(), *this);
+            
         }
 
         bool BasicVariant::variant_value_null() const
