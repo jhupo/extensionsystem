@@ -11,7 +11,11 @@ namespace extension{
 
         enum EventConstants
         {
-
+            PluginStartedEvent = 0x0001LL,
+            pluginsChanged,
+            initializationDone,
+            AsynchronousShutdownFinishedEvent,
+            PluginFinishedEvent,
         };
 
 

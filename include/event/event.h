@@ -5,7 +5,6 @@
 #include <basicvariant/basicvariant.h>
 
 #include <boost/shared_ptr.hpp>
-#include <boost/enable_shared_from_this.hpp>
 
 namespace extension{
 
@@ -13,7 +12,7 @@ namespace extension{
 
         class EventPrivate;
 
-        class EXTENSION_EXPORT Event : public boost::enable_shared_from_this<Event>
+        class EXTENSION_EXPORT Event : public basic_variant_format_t
         {
             DECLARE_PRIVATE(Event)
             DECLARE_SHARED_PTR(Event)
@@ -29,8 +28,6 @@ namespace extension{
 
             void setEventId(const int64_t& id);
             int64_t eventId()const;
-
-            boost::shared_ptr<Event const> clone()const;
 
         private:
             const boost::shared_ptr<EventPrivate> d_ptr;

@@ -1,11 +1,13 @@
 #include <event/eventdispatch.h>
 #include <logger/logger.h>
+#include <event/event.h>
 
 #include <map>
 #include <vector>
 
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/thread.hpp>
+#include <boost/unordered_map.hpp>
 
 namespace extension{
 
@@ -18,13 +20,14 @@ namespace extension{
             EventDispatchPrivate(EventDispatch* q);
             ~EventDispatchPrivate();
 
-            std::vector<EventDispatch::EventCallback> find_id_call_back(const int64_t& id);
+            std::vector<EventDispatch::EventCallback> find_id_call_back(int64_t id);
 
             EventDispatch*const                             q_ptr;
             boost::mutex                                    _mutex;
-            std::map<int64_t,
-            std::map<EventDispatch::EventPriority,
-            std::vector<EventDispatch::EventCallback> > >   _listeners;
+            boost::unordered_map<int64_t,
+            boost::unordered_map<EventDispatch::EventPriority,
+            boost::unordered_map<const void*,
+            std::vector<EventDispatch::EventCallback> > > > _listeners;
         };
 
         EventDispatchPrivate::EventDispatchPrivate(EventDispatch *q)
@@ -38,12 +41,18 @@ namespace extension{
 
         }
 
-        std::vector<EventDispatch::EventCallback> EventDispatchPrivate::find_id_call_back(const int64_t &id)
+        std::vector<EventDispatch::EventCallback> EventDispatchPrivate::find_id_call_back(int64_t id)
         {
             std::vector<EventDispatch::EventCallback> result;
-            result.insert(result.end(),_listeners[id][EventDispatch::HighEventPriority].begin(),_listeners[id][EventDispatch::HighEventPriority].end());
-            result.insert(result.end(),_listeners[id][EventDispatch::NormalEventPriority].begin(),_listeners[id][EventDispatch::NormalEventPriority].end());
-            result.insert(result.end(),_listeners[id][EventDispatch::LowEventPriority].begin(),_listeners[id][EventDispatch::LowEventPriority].end());
+            boost::unordered_map<const void*,std::vector<EventDispatch::EventCallback> > map = _listeners[id][EventDispatch::HighEventPriority];
+            map.insert(_listeners[id][EventDispatch::NormalEventPriority].begin(),_listeners[id][EventDispatch::NormalEventPriority].end());
+            map.insert(_listeners[id][EventDispatch::LowEventPriority].begin(),_listeners[id][EventDispatch::LowEventPriority].end());
+            for(boost::unordered_map<const void*,std::vector<EventDispatch::EventCallback> >::const_iterator iter = map.begin();
+                iter != map.end();
+                ++iter)
+            {
+                result.insert(result.end(),iter->second.begin(),iter->second.end());
+            }
             return result;
         }
 
@@ -64,23 +73,25 @@ namespace extension{
             return &_inst_;
         }
 
-        void EventDispatch::registerEvent(const int64_t& id, const EventCallback& call, const EventPriority& priority)
+        void EventDispatch::registerEvent(int64_t id, const void* object, const EventCallback& call, const EventPriority& priority)
         {
             D_P(EventDispatch);
             boost::mutex::scoped_lock lock(d->_mutex);
-            d->_listeners[id][priority].push_back(call);
-            LOG_DBG(extension.core.event) << "register event id: " << id << " priority: " << priority;
+            d->_listeners[id][priority][object].push_back(call);
+            LOG_DBG(extension.core.event) << "register event id: " << id << " priority: " << priority << " object: " << object;
         }
 
-        void EventDispatch::unRegisterEvent(const int64_t& id)
+        void EventDispatch::unRegisterEvent(int64_t id, const void* object)
         {
             D_P(EventDispatch);
             boost::mutex::scoped_lock lock(d->_mutex);
-            d->_listeners.erase(id);
-            LOG_DBG(extension.core.event) << "unregister event id: " << id;
+            d->_listeners[id][EventDispatch::HighEventPriority].erase(object);
+            d->_listeners[id][EventDispatch::NormalEventPriority].erase(object);
+            d->_listeners[id][EventDispatch::LowEventPriority].erase(object);
+            LOG_DBG(extension.core.event) << "unregister event id: " << id << " object: " << object;
         }
 
-        void EventDispatch::publishEvent(const int64_t& id, const Event& var, const ConnectionType& priority)
+        void EventDispatch::publishEvent(int64_t id, const BasicVariant& var, const ConnectionType& priority)
         {
             D_P(EventDispatch);
             boost::mutex::scoped_lock lock(d->_mutex);
@@ -90,22 +101,13 @@ namespace extension{
                 ++iter)
             {
                 if(EventDispatch::UniqueConnection == priority){
-                    boost::thread t(*iter,var);
+                    boost::thread t(*iter,Event(id,var));
                     t.detach();
                 }else if(EventDispatch::QueuedConnection == priority){
-                    if((*iter)(var)){
-                       break; 
-                    }
+                    (*iter)(Event(id,var));
                 }
             }
         }
-
-        void EventDispatch::sendPostedEvents(const int64_t& id, const Event& var)
-        {
-            EventDispatch::inst()->publishEvent(id,var,UniqueConnection);
-        }
-
-
 
 
     }

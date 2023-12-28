@@ -63,4 +63,19 @@ template <typename Wrapper> static inline typename Wrapper::element_type* GetPtr
         typedef boost::shared_ptr<const Class> const_ptr; \
     private:
 
+#if (defined(__unix__) || defined(_WIN32)) && (defined(__GNUC__) || defined(__clang__))
+#  define PLUGIN_METADATA_SECTION \
+    __attribute__((section(".metadata"))) __attribute__((used))
+#elif defined(__APPLE__)
+#  define PLUGIN_METADATA_SECTION \
+    __attribute__((section("__TEXT,metadata"))) __attribute__((used))
+#elif defined(_MSC_VER)
+#pragma section(".mymetadata",read,shared)
+#  define PLUGIN_METADATA_SECTION \
+    __declspec(allocate(".metadata"))
+#else
+#  define PLUGIN_METADATA_SECTION
+#endif
+
+
 #endif

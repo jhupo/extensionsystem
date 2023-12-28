@@ -91,13 +91,6 @@ namespace extension{
             return d->_event_id;
         }
 
-        boost::shared_ptr<Event const> Event::clone() const
-        {
-            D_P(const Event);
-            boost::mutex::scoped_lock lock(d->_mutex);
-            return shared_from_this();
-        }
-
     }
 }
 

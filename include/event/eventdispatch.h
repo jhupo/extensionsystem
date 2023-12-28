@@ -1,9 +1,8 @@
 #ifndef __EVENT_DISPATCH_H__
 #define __EVENT_DISPATCH_H__
 
-
 #include <extension_global.h>
-#include <event/event.h>
+#include <basicvariant/basicvariant.h>
 
 #include <boost/function.hpp>
 #include <boost/shared_ptr.hpp>
@@ -12,10 +11,12 @@ namespace extension{
 
     namespace core{
 
+        class Event;
         class EventDispatchPrivate;
 
         class EXTENSION_EXPORT EventDispatch DECL_EQ_FINAL
         {
+            DISABLE_COPY(EventDispatch)
             DECLARE_PRIVATE(EventDispatch)
             DECLARE_SHARED_PTR(EventDispatch)
         public:
@@ -23,16 +24,14 @@ namespace extension{
             enum EventPriority{HighEventPriority,NormalEventPriority,LowEventPriority};
             enum ConnectionType{UniqueConnection,QueuedConnection};
 
-            typedef boost::function<bool(const Event& evnt)> EventCallback;
+            typedef boost::function<void(const Event& evnt)> EventCallback;
 
             static EventDispatch* inst();
 
-            void publishEvent(const int64_t& id, const Event& var, const ConnectionType& priority = QueuedConnection);
+            void publishEvent(int64_t id, const BasicVariant& var, const ConnectionType& priority = QueuedConnection);
 
-            void registerEvent(const int64_t& id, const EventCallback& call, const EventPriority& priority = NormalEventPriority);
-            void unRegisterEvent(const int64_t& id);
-
-            static void sendPostedEvents(const int64_t& id, const Event& var);
+            void registerEvent(int64_t id, const void* object, const EventCallback& call, const EventPriority& priority = NormalEventPriority);
+            void unRegisterEvent(int64_t id, const void* object);
 
         private:
             EventDispatch();
