@@ -74,7 +74,7 @@ namespace extension{
             if(iter != d->_properties.end()){
                 return iter->second;
             }
-            return basic_varinat_null;
+            return basic_variant_null;
         }
 
         void Event::setEventId(const int64_t &id)

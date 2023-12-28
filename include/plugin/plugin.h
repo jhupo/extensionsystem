@@ -11,7 +11,7 @@ namespace extension{
         class PluginSpec;
         class PluginPrivate;
 
-        class Plugin
+        class EXTENSION_EXPORT Plugin
         {
             DISABLE_COPY(Plugin)
             DECLARE_PRIVATE(Plugin)

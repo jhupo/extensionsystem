@@ -66,7 +66,7 @@ namespace extension{
             }
         };
 
-#define basic_varinat_null variant_t((void*)NULL)
+#define basic_variant_null variant_t((void*)NULL)
 
         template<>   
         void* BasicVariant::variant_value<void*>(const BasicVariant &var);

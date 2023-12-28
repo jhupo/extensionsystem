@@ -88,7 +88,7 @@ namespace extension{
         }
 
         BasicVariant::BasicVariant()
-            : variant_t(basic_varinat_null)
+            : variant_t(basic_variant_null)
         {
 
         }

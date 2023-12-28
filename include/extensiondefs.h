@@ -70,7 +70,7 @@ template <typename Wrapper> static inline typename Wrapper::element_type* GetPtr
 #  define PLUGIN_METADATA_SECTION \
     __attribute__((section("__TEXT,metadata"))) __attribute__((used))
 #elif defined(_MSC_VER)
-#pragma section(".mymetadata",read,shared)
+#pragma section(".metadata",read,shared)
 #  define PLUGIN_METADATA_SECTION \
     __declspec(allocate(".metadata"))
 #else
