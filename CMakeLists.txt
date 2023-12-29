@@ -8,6 +8,7 @@ project(${project_name})
 
 add_definitions(-DEXTENSION_LIBRARY)
 add_definitions(-DBOOST_LOG_DYN_LINK)
+add_definitions(-DJSON_DLL_BUILD)
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${top_binary_dir})
 

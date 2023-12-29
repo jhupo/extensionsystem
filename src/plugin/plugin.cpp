@@ -74,13 +74,6 @@ namespace extension{
             return d->_spec;
         }
 
-        PLUGIN_METADATA_SECTION
-        static const unsigned char _plugin_metadata[] = 
-        {
-            'P','L','U','G','I','N','_','M','E','T','A','D','A','T','A','_','S','E','C','T','I','O','N','\0'
-        };
-
-        
     }
 
 }
