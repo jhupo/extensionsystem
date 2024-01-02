@@ -80,6 +80,14 @@
         "semaphore": "cpp",
         "shared_mutex": "cpp",
         "stop_token": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "any": "cpp",
+        "barrier": "cpp",
+        "charconv": "cpp",
+        "coroutine": "cpp",
+        "latch": "cpp",
+        "ranges": "cpp",
+        "span": "cpp",
+        "syncstream": "cpp"
     }
 }
