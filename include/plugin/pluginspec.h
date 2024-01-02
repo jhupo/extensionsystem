@@ -6,8 +6,6 @@
 #include <string>
 #include <vector>
 
-#include <boost/shared_ptr.hpp>
-
 namespace extension{
 
     namespace core{
@@ -28,7 +26,7 @@ namespace extension{
             std::string     name;
         };
 
-        class EXTENSION_EXPORT PluginSpec DECL_EQ_FINAL
+        class EXTENSION_EXPORT PluginSpec final
         {
             DISABLE_COPY(PluginSpec)
             DECLARE_PRIVATE(PluginSpec)
@@ -54,7 +52,7 @@ namespace extension{
             Plugin* plugin()const;
 
         private:
-            const boost::shared_ptr<PluginSpecPrivate>          d_ptr;
+            const std::shared_ptr<PluginSpecPrivate>          d_ptr;
         };
 
 

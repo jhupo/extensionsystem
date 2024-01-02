@@ -1,6 +1,8 @@
 #ifndef __EXTENSIONDEFS_H__
 #define __EXTENSIONDEFS_H__
 
+#include <memory>
+
 #if defined(WIN32)
 #define DECL_EXPORT __declspec(dllexport)
 #define DECL_IMPORT __declspec(dllimport)
@@ -11,37 +13,11 @@
 #error Unsupported platform
 #endif
 
-#if __cplusplus > 201103L
-#define DECL_MODERNITY_COMPILER
-#endif
-
-#ifdef DECL_MODERNITY_COMPILER
-#define COMPILER_DELETE_MEMBERS
-#endif
-
-#ifdef DECL_MODERNITY_COMPILER
-#define DECL_EQ_DELETE = delete
-#define DECL_EQ_DEFAULT = default
-#define DECL_EQ_OVERRIDE override
-#define DECL_EQ_FINAL final
-#define DECL_EQ_NOEXCEPT noexcept
-#define DECL_EQ_CONSTEXPR constexpr
-#define DECL_EQ_NULLPTR nullptr
-#else
-#define DECL_EQ_DELETE
-#define DECL_EQ_DEFAULT
-#define DECL_EQ_OVERRIDE
-#define DECL_EQ_FINAL
-#define DECL_EQ_NOEXCEPT
-#define DECL_EQ_CONSTEXPR
-#define DECL_EQ_NULLPTR NULL
-#endif
-
 #define UNUSED(x) (void)x
 
 #define DISABLE_COPY(Class) \
-    Class(const Class &) DECL_EQ_DELETE;\
-    Class &operator=(const Class &) DECL_EQ_DELETE;
+    Class(const Class &) = delete;\
+    Class &operator=(const Class &) = delete;
 
 template <typename T> static inline T *GetPtrHelper(T *ptr) { return ptr; }
 template <typename Wrapper> static inline typename Wrapper::element_type* GetPtrHelper(const Wrapper &p) { return p.get(); }
@@ -59,8 +35,8 @@ template <typename Wrapper> static inline typename Wrapper::element_type* GetPtr
 
 #define DECLARE_SHARED_PTR(Class)   \
     public: \
-        typedef boost::shared_ptr<Class> ptr; \
-        typedef boost::shared_ptr<const Class> const_ptr; \
+        typedef std::shared_ptr<Class> ptr; \
+        typedef std::shared_ptr<const Class> const_ptr; \
     private:
 
 #if (defined(__unix__) || defined(_WIN32)) && (defined(__GNUC__) || defined(__clang__))

@@ -1,5 +1,7 @@
 #include <event/event.h>
 
+#include <map>
+
 #include <boost/thread/mutex.hpp>
 
 namespace extension{

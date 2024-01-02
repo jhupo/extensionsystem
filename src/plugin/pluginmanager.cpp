@@ -1,5 +1,5 @@
 #include <plugin/pluginmanager.h>
-
+#include <plugin/private/plugin_p.h>
 
 namespace extension{
 
@@ -44,7 +44,8 @@ namespace extension{
             return &_inst_;
         }
 
-        void PluginManager::addObject(const std::string &name, const void *obj)
+        template<>
+        void PluginManager::addObject<ObjectSmartDeleter>(const std::string &name, void *obj, ObjectSmartDeleter& smart)
         {
 
         }
@@ -54,9 +55,14 @@ namespace extension{
 
         }
 
-        void PluginManager::removeObject(const void *obj)
+        void PluginManager::removeObject(void *obj)
         {
 
+        }
+
+        std::string PluginManager::interfaceIdentifier() const
+        {
+            return std::string();
         }
 
     }

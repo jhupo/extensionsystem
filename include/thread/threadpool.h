@@ -2,11 +2,9 @@
 #define __EXTENSION_THREADPOOL_H__
 
 #include <extension_global.h>
-
-#include <boost/shared_ptr.hpp>
-#include <boost/function.hpp>
-
 #include <basicvariant/basicvariant.h>
+
+#include <functional>
 
 namespace extension{
 
@@ -20,7 +18,7 @@ namespace extension{
             DECLARE_PRIVATE(ThreadPool)
         public:
 
-            typedef boost::function<void(const BasicVariant&)> TaskCallback;
+            typedef std::function<void(const BasicVariant&)> TaskCallback;
 
             static ThreadPool* inst();
 
@@ -44,7 +42,7 @@ namespace extension{
             virtual~ThreadPool();
 
         private:
-            const boost::shared_ptr<ThreadPoolPrivate>              d_ptr;
+            const std::shared_ptr<ThreadPoolPrivate>              d_ptr;
         };
 
     }

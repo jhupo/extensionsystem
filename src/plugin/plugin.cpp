@@ -29,29 +29,32 @@ namespace extension{
         {
             D_P(Plugin);
             boost::mutex::scoped_lock lock(d->_mutex);
-            for(std::list<std::pair<std::string,const void*> >::const_iterator iter = d->_addedObjectsInReverseOrder.begin();
+            for(std::list<std::pair<std::string,std::pair<void*,ObjectSmartDeleter> > >::iterator iter = d->_addedObjectsInReverseOrder.begin();
                 iter != d->_addedObjectsInReverseOrder.end();
                 ++iter)
             {
                 PluginManager::inst()->removeObject(iter->first);
-                delete iter->second;
+                iter->second.second(iter->second.first);
             }
             d->_addedObjectsInReverseOrder.clear();
         }
 
-        void Plugin::addObject(const std::string &name, const void *obj)
+        template<>
+        void Plugin::addObject<ObjectSmartDeleter>(const std::string &name, void *obj, ObjectSmartDeleter& smart)
         {
             D_P(Plugin);
             boost::mutex::scoped_lock lock(d->_mutex);
-            PluginManager::inst()->addObject(name,obj);
+            d->_addedObjectsInReverseOrder.push_back(std::make_pair(name,std::make_pair(obj,smart)));
+            PluginManager::inst()->addObject(name,obj,smart);
         }
 
-        void Plugin::addAutoReleasedObject(const std::string &name, const void *obj)
+        template<>
+        void Plugin::addAutoReleasedObject(const std::string &name, void *obj, ObjectSmartDeleter& smart)
         {
             D_P(Plugin);
             boost::mutex::scoped_lock lock(d->_mutex);
-            d->_addedObjectsInReverseOrder.push_front(std::make_pair(name,obj));
-            PluginManager::inst()->addObject(name,obj);
+            d->_addedObjectsInReverseOrder.push_front(std::make_pair(name,std::make_pair(obj,smart)));
+            PluginManager::inst()->addObject(name,obj,smart);
         }
 
         void Plugin::removeObject(void *obj)

@@ -3,20 +3,20 @@
 
 #include <extension_global.h>
 
-#include <boost/shared_ptr.hpp>
-
 #include <list>
 #include <vector>
+#include <string>
 
 namespace extension{
 
     namespace core{
 
+        struct ObjectSmartDeleter;
         class Plugin;
         class PluginSpec;
         class PluginManagerPrivate;
 
-        class EXTENSION_EXPORT PluginManager DECL_EQ_FINAL
+        class EXTENSION_EXPORT PluginManager final
         {
             DISABLE_COPY(PluginManager)
             DECLARE_PRIVATE(PluginManager)
@@ -24,9 +24,10 @@ namespace extension{
 
             static PluginManager* inst();
 
-            void addObject(const std::string& name, const void* object);
+            template<typename T = ObjectSmartDeleter>
+            void addObject(const std::string& name, void* object, T& smart = ObjectSmartDeleter());
             void removeObject(const std::string& name);
-            void removeObject(const void* object);
+            void removeObject(void* object);
 
             std::list<std::pair<std::string,const void*> > allObjects()const;
 
@@ -53,7 +54,7 @@ namespace extension{
         private:
             PluginManager();
             virtual~PluginManager();
-            const boost::shared_ptr<PluginManagerPrivate>       d_ptr;
+            const std::shared_ptr<PluginManagerPrivate>       d_ptr;
         };
 
 

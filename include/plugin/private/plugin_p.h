@@ -12,6 +12,13 @@ namespace extension{
 
     namespace core{
 
+        struct ObjectSmartDeleter
+        {
+            void operator()(void* obj){
+                free(obj);
+            }
+        };
+
         class Plugin;
         class PluginSpec;
 
@@ -22,10 +29,10 @@ namespace extension{
             PluginPrivate(Plugin* q);
             ~PluginPrivate();
             
-            Plugin*const                                       q_ptr;
-            boost::mutex                                       _mutex;
-            PluginSpec*                                        _spec;
-            std::list<std::pair<std::string,const void*> >     _addedObjectsInReverseOrder;
+            Plugin*const                                                                q_ptr;
+            boost::mutex                                                                _mutex;
+            PluginSpec*                                                                 _spec;
+            std::list<std::pair<std::string,std::pair<void*,ObjectSmartDeleter> > >     _addedObjectsInReverseOrder;
         };
 
     }

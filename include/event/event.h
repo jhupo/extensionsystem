@@ -4,8 +4,6 @@
 #include <extension_global.h>
 #include <basicvariant/basicvariant.h>
 
-#include <boost/shared_ptr.hpp>
-
 namespace extension{
 
     namespace core{
@@ -30,7 +28,7 @@ namespace extension{
             int64_t eventId()const;
 
         private:
-            const boost::shared_ptr<EventPrivate> d_ptr;
+            const std::shared_ptr<EventPrivate> d_ptr;
         };
 
     }

@@ -4,8 +4,7 @@
 #include <extension_global.h>
 #include <basicvariant/basicvariant.h>
 
-#include <boost/function.hpp>
-#include <boost/shared_ptr.hpp>
+#include <functional>
 
 namespace extension{
 
@@ -14,7 +13,7 @@ namespace extension{
         class Event;
         class EventDispatchPrivate;
 
-        class EXTENSION_EXPORT EventDispatch DECL_EQ_FINAL
+        class EXTENSION_EXPORT EventDispatch final
         {
             DISABLE_COPY(EventDispatch)
             DECLARE_PRIVATE(EventDispatch)
@@ -24,7 +23,7 @@ namespace extension{
             enum EventPriority{HighEventPriority,NormalEventPriority,LowEventPriority};
             enum ConnectionType{UniqueConnection,QueuedConnection};
 
-            typedef boost::function<void(const Event& evnt)> EventCallback;
+            typedef std::function<void(const Event& evnt)> EventCallback;
 
             static EventDispatch* inst();
 
@@ -36,7 +35,7 @@ namespace extension{
         private:
             EventDispatch();
             virtual~EventDispatch();
-            const boost::shared_ptr<EventDispatchPrivate>       d_ptr;
+            const std::shared_ptr<EventDispatchPrivate>       d_ptr;
         };
 
 

@@ -277,7 +277,7 @@ namespace extension{
             }else if(variant_string == var.which()){
                 return const_cast<char*>(boost::get<std::string>(var).c_str());
             }
-            return DECL_EQ_NULLPTR;
+            return nullptr;
         }
 
         template<>
@@ -290,7 +290,7 @@ namespace extension{
             }else if(variant_string == var.which()){
                 return reinterpret_cast<unsigned char*>(const_cast<char*>(boost::get<std::string>(var).c_str()));
             }
-            return DECL_EQ_NULLPTR;
+            return nullptr;
         }
 
         template<>

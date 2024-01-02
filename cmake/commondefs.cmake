@@ -42,6 +42,9 @@ set(cmake_c_flags_debug "$ENV{CFLAGS} -O0 -Wall -g -ggdb")
 set(cmake_c_flags_release "$ENV{CFLAGS} -DNODEBUG -O2 -Wall")
 set(cmake_c_flags_relwithdebinfo "$ENV{CXXFLAGS} -Wall -O2 -g -DNDEBUG")
 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(thirdparty_libs 
                     boost_chrono 
@@ -50,6 +53,7 @@ set(thirdparty_libs
                     boost_log_setup  
                     boost_regex 
                     boost_filesystem 
+                    jsoncpp
                     m
                     dl
                     pthread)

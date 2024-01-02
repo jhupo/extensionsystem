@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 
 set(project_name examples)
 
@@ -11,6 +11,5 @@ add_executable(examples main.cpp)
 include_directories(${top_include_dir})
 
 target_link_libraries(examples ${top_binary_dir}/libextension.so)
-target_link_libraries(${project_name} boost_log)
-target_link_libraries(${project_name} boost_log_setup)
-target_link_libraries(${project_name} pthread)
+
+target_link_libraries(${project_name} ${thirdparty_libs})

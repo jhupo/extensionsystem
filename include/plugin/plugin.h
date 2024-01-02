@@ -3,11 +3,11 @@
 
 #include <extension_global.h>
 
-#include <boost/shared_ptr.hpp>
 
 namespace extension{
     namespace core{
 
+        struct ObjectSmartDeleter;
         class PluginSpec;
         class PluginPrivate;
 
@@ -30,8 +30,10 @@ namespace extension{
 
             virtual ShutdownFlag aboutToShutdown() { return SynchronousShutdown; }
 
-            void addObject(const std::string& name, const void *obj);
-            void addAutoReleasedObject(const std::string& name, const void *obj);
+            template<typename T = ObjectSmartDeleter>
+            void addObject(const std::string& name, void *obj, T& smart = ObjectSmartDeleter());
+            template<typename T = ObjectSmartDeleter>
+            void addAutoReleasedObject(const std::string& name, void *obj, T& smart);
 
             void removeObject(void *obj);
             void removeObject(const std::string& name);
@@ -39,7 +41,7 @@ namespace extension{
             PluginSpec *pluginSpec() const;
 
         private:
-            const boost::shared_ptr<PluginPrivate> d_ptr;
+            const std::shared_ptr<PluginPrivate> d_ptr;
         };
 
 

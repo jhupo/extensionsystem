@@ -1,11 +1,12 @@
 #include <plugin/pluginspec.h>
 #include <logger/logger.h>
-#include <json/json.h>
 #include <plugin/plugin.h>
 #include <plugin/pluginmanager.h>
 
 #include <boost/filesystem.hpp>
 #include <boost/dll.hpp>
+
+#include <json/json.h>
 
 #if defined(__unix__) 
 #include <elf.h>
@@ -15,7 +16,6 @@
 #include <sys/mman.h>
 #elif defined(__APPLE__)
 #include <dlfcn.h>
-#include <mach-o/getsect.h>
 #elif defined(_WIN32)
 #include <windows.h>
 #include "pluginspec.h"
@@ -86,74 +86,74 @@ namespace extension{
         {
             _hasError = false;
             _errorString = _pluginName = _version = _description = _url = "";
-            _plugin = DECL_EQ_NULLPTR;
+            _plugin = nullptr;
             _state = PluginSpec::Invalid;
-            _location = boost::filesystem::complete(path).string();
+            _location = boost::filesystem::absolute(path).string();
             if(_location.empty()){
                 _hasError = true;
                 _errorString = "Invalid path";
-                LOG_WRN(extension.core.plugin) << "Invalid path: " << path;
+                LOG_WRN(extension.plugin) << "Invalid path: " << path;
                 return false;
             }
-            _metaData = Json::Value(GetCustomSectionContent(_location,_plugin_metadata_section));
+            _metaData = Json::Value(GetCustomSectionContent(_location,_plugin_metadata_section).c_str());
             if(!readMetaData(_metaData)){
                 _hasError = true;
                 _errorString = "Invalid metadata";
-                LOG_WRN(extension.core.plugin) << "Invalid metadata: " << _location;
+                LOG_WRN(extension.plugin) << "Invalid metadata: " << _location;
                 return false;
             }
             _state = PluginSpec::Read;
-            LOG_INF(extension.core.plugin) << _pluginName <<" Read successful";
+            LOG_INF(extension.plugin) << _pluginName <<" Read successful";
             return true;
         }
 
         bool PluginSpecPrivate::readMetaData(const Json::Value &json)
         {
-            LOG_DBG(extension.core.plugin) << "Read metadata: " << json;
+            LOG_DBG(extension.plugin) << "Read metadata: " << json;
             if(!json.isObject()){
-                LOG_ERR(extension.core.plugin) << "Invalid metadata: " << json;
+                LOG_ERR(extension.plugin) << "Invalid metadata: " << json;
                 return false;
             }
             if(!json.isMember(_plugin_metadata_iid) || !json[_plugin_metadata_iid].isString()){
-                LOG_ERR(extension.core.plugin) << "Invalid metadata: " << json;
+                LOG_ERR(extension.plugin) << "Invalid metadata: " << json;
                 return false;
             }
             if(json[_plugin_metadata_iid].asString() != PluginManager::inst()->interfaceIdentifier()){
-                LOG_ERR(extension.core.plugin) << "Invalid metadata: " << json;
+                LOG_ERR(extension.plugin) << "Invalid metadata: " << json;
                 return false;
             }
             if(!json.isMember(_plugin_metadata_name) || !json[_plugin_metadata_name].isString()){
-                LOG_ERR(extension.core.plugin) << "Invalid metadata: " << json;
+                LOG_ERR(extension.plugin) << "Invalid metadata: " << json;
                 return false;
             }
             _pluginName = json[_plugin_metadata_name].asString();
 
             if(!json.isMember(_plugin_metadata_version) || !json[_plugin_metadata_version].isString()){
-                LOG_ERR(extension.core.plugin) << "Invalid metadata: " << json;
+                LOG_ERR(extension.plugin) << "Invalid metadata: " << json;
                 return false;
             }
             _version = json[_plugin_metadata_version].asString();
 
             if(!json.isMember(_plugin_metadata_description) || !json[_plugin_metadata_description].isString()){
-                LOG_ERR(extension.core.plugin) << "Invalid metadata: " << json;
+                LOG_ERR(extension.plugin) << "Invalid metadata: " << json;
                 return false;
             }
             _description = json[_plugin_metadata_description].asString();
 
             if(!json.isMember(_plugin_metadata_url) || !json[_plugin_metadata_url].isString()){
-                LOG_ERR(extension.core.plugin) << "Invalid metadata: " << json;
+                LOG_ERR(extension.plugin) << "Invalid metadata: " << json;
                 return false;
             }
             _url = json[_plugin_metadata_url].asString();
 
             if(!json.isMember(_plugin_metadata_enabled) || !json[_plugin_metadata_enabled].isBool()){
-                LOG_ERR(extension.core.plugin) << "Invalid metadata: " << json;
+                LOG_ERR(extension.plugin) << "Invalid metadata: " << json;
                 return false;
             }
             _enabled = json[_plugin_metadata_enabled].asBool();
 
             if(!json.isMember(_plugin_metadata_dependency) || !json[_plugin_metadata_dependency].isArray()){
-                LOG_ERR(extension.core.plugin) << "Invalid metadata: " << json;
+                LOG_ERR(extension.plugin) << "Invalid metadata: " << json;
                 return false;
             }
             for(Json::Value::const_iterator iter = json[_plugin_metadata_dependency].begin();
@@ -161,11 +161,11 @@ namespace extension{
                 ++iter)
             {
                 if(!iter->isObject()){
-                    LOG_ERR(extension.core.plugin) << "Invalid metadata: " << json;
+                    LOG_ERR(extension.plugin) << "Invalid metadata: " << json;
                     return false;
                 }
                 if(!iter->isMember("Name") || !iter->isMember("Type")){
-                    LOG_ERR(extension.core.plugin) << "Invalid metadata: " << json;
+                    LOG_ERR(extension.plugin) << "Invalid metadata: " << json;
                     return false;
                 }
                 PluginDependency dependency;
@@ -186,14 +186,14 @@ namespace extension{
                 if(PluginSpec::Loaded == _state){
                     return true;
                 }
-                LOG_ERR(extension.core.plugin) << "Invalid plugin state: " << _state;
+                LOG_ERR(extension.plugin) << "Invalid plugin state: " << _state;
                 return false;
             }
 
             try{
-                _plugin = boost::dll::import<Plugin*>(_location,"Plugin");
+                // _plugin = boost::dll::import_symbol<Plugin*>(_location,"Plugin");
             }catch(const boost::system::system_error& e){
-                LOG_ERR(extension.core.plugin) << "Load library failed: " << _location << " " << e.what();
+                LOG_ERR(extension.plugin) << "Load library failed: " << _location << " " << e.what();
                 return false;
             }
             return false;
@@ -201,7 +201,7 @@ namespace extension{
 
         std::string PluginSpecPrivate::GetCustomSectionContent(const std::string &libraryPath, const std::string &sectionName)
         {
-            const char* section_start = DECL_EQ_NULLPTR;
+            const char* section_start = nullptr;
             size_t section_size = 0;
             std::string result;
 #if defined(__unix__)
@@ -211,17 +211,17 @@ namespace extension{
             Elf64_Ehdr *header;
             Elf64_Shdr *sections, *sh_strtab;
             if ((fd = open(libraryPath.c_str(), O_RDONLY)) < 0){
-                LOG_ERR(extension.core.plugin) << "open failed: " << libraryPath;
+                LOG_ERR(extension.plugin) << "open failed: " << libraryPath;
                 return result;
             }
             if (fstat(fd, &sb) == -1){
-                LOG_ERR(extension.core.plugin) << "fstat failed: " << libraryPath;
+                LOG_ERR(extension.plugin) << "fstat failed: " << libraryPath;
                 close(fd);
                 return result;
             }
             mapped = static_cast<char*>(mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0));
             if (mapped == MAP_FAILED){
-                LOG_ERR(extension.core.plugin) << "mmap failed: " << libraryPath;
+                LOG_ERR(extension.plugin) << "mmap failed: " << libraryPath;
                 close(fd);
                 return result;
             }
@@ -233,7 +233,7 @@ namespace extension{
                 if (strcmp(sh_strtab_p + sections[i].sh_name, sectionName.c_str()) == 0){
                     section_str = (char*)malloc(sections[i].sh_size + 1);
                     if(!section_str){
-                        LOG_ERR(extension.core.plugin) << "malloc failed: " << libraryPath;
+                        LOG_ERR(extension.plugin) << "malloc failed: " << libraryPath;
                         break;
                     }
                     memcpy(section_str, mapped + sections[i].sh_offset, sections[i].sh_size);
@@ -252,7 +252,7 @@ namespace extension{
 #elif defined(_WIN32)
             HMODULE hModule = LoadLibraryEx(libraryPath.c_str(), NULL, LOAD_LIBRARY_AS_DATAFILE);
             if(!hModule){
-                LOG_ERR(extension.core.plugin) << "LoadLibraryEx failed: " << libraryPath;
+                LOG_ERR(extension.plugin) << "LoadLibraryEx failed: " << libraryPath;
                 return result;
             }
             HRSRC hResInfo = FindResource(hModule, MAKEINTRESOURCE(sectionName.c_str()), RT_RCDATA);

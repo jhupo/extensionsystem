@@ -5,7 +5,7 @@
 #include <basicvariant/basicvariant.h>
 #include <event/event.h>
 
-#include <boost/bind.hpp>
+#include <functional>
 
 void test(const extension::core::Event& var)
 {
@@ -18,7 +18,7 @@ int main(int argc, char** argv)
 
     LOG_INF(logger_main) << " test";
 
-    extension::core::EventDispatch::EventCallback callback = boost::bind(&test,_1);
+    extension::core::EventDispatch::EventCallback callback = std::bind(test,std::placeholders::_1);
 
     extension::core::EventDispatch::inst()->registerEvent(1,NULL,callback);
 

@@ -78,7 +78,7 @@ namespace extension{
             D_P(EventDispatch);
             boost::mutex::scoped_lock lock(d->_mutex);
             d->_listeners[id][priority][object].push_back(call);
-            LOG_DBG(extension.core.event) << "register event id: " << id << " priority: " << priority << " object: " << object;
+            LOG_DBG(extension.event) << "register event id: " << id << " priority: " << priority << " object: " << object;
         }
 
         void EventDispatch::unRegisterEvent(int64_t id, const void* object)
@@ -88,10 +88,10 @@ namespace extension{
             d->_listeners[id][EventDispatch::HighEventPriority].erase(object);
             d->_listeners[id][EventDispatch::NormalEventPriority].erase(object);
             d->_listeners[id][EventDispatch::LowEventPriority].erase(object);
-            LOG_DBG(extension.core.event) << "unregister event id: " << id << " object: " << object;
+            LOG_DBG(extension.event) << "unregister event id: " << id << " object: " << object;
         }
 
-        void EventDispatch::publishEvent(int64_t id, const BasicVariant& var, const ConnectionType& priority)
+        void EventDispatch::publishEvent(int64_t id, const BasicVariant& var, const EventDispatch::ConnectionType& priority)
         {
             D_P(EventDispatch);
             boost::mutex::scoped_lock lock(d->_mutex);
