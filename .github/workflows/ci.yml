@@ -9,23 +9,32 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
-            - name: build_thirdparty
+            - name: build_boost_thirdparty
               run: |
                     git submodule update --init --recursive
                     cd thirdparty/boost
                     bash bootstrap.sh
                     ./b2 -j4
                     ./b2 install
-                    cd ../jsoncpp
+
+            - name: build_jsoncpp_thirdparty
+              run: |
+                    cd thirdparty/jsoncpp
                     mkdir build
                     cd build
                     cmake ..
                     make -j
                     make install
+
+            - name: set_thirdparty_env
+              run: |
                     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
                     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64
-                    cd ../../../build
+
+            - name: build_extension_system
+              run: |
+                    cd build
                     cmake ..
-                    make -j
+                    make
                 
                 
