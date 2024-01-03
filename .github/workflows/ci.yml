@@ -10,21 +10,22 @@ jobs:
         steps:
             - uses: actions/checkout@v3
             - name: build_thirdparty
-                run: |
-                git submodules update --init --recursive
-                cd thirdparty/boost
-                bash bootstrap.sh
-                ./b2 -j
-                ./b2 -install
-                cd ../jsoncpp
-                mkdir build
-                cd build
-                cmake ..
-                make -j
-                make install
-                export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
-                export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64
-                cd ../../../build
-                cmake ..
-                make -j
+              run: |
+                    git submodules update --init --recursive
+                    cd thirdparty/boost
+                    bash bootstrap.sh
+                    ./b2 -j
+                    ./b2 -install
+                    cd ../jsoncpp
+                    mkdir build
+                    cd build
+                    cmake ..
+                    make -j
+                    make install
+                    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+                    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64
+                    cd ../../../build
+                    cmake ..
+                    make -j
+                
                 
