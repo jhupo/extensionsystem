@@ -49,8 +49,9 @@ jobs:
 
             - name: create_extension_tar_files
               run: |
-                    tar -czf extension.tar.gz extensionsystem
-                    tar -cJf extension.tar.xz extensionsystem
+                    pwd
+                    tar -czf extension.tar.gz extensionsystem/
+                    tar -cJf extension.tar.xz extensionsystem/
 
             - uses: softprops/action-gh-release@v1
               with:
