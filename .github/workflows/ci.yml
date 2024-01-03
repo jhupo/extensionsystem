@@ -14,7 +14,7 @@ jobs:
                     git submodule update --init --recursive
                     cd thirdparty/boost
                     bash bootstrap.sh
-                    ./b2 -j
+                    ./b2 -j4
                     ./b2 -install
                     cd ../jsoncpp
                     mkdir build
