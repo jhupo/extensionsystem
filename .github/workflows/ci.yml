@@ -49,12 +49,12 @@ jobs:
 
             - name: create_extension_tar_files
               run: |
-                    tar -czf ${{ github.ref_name }}.tar.gz ${{ github.ref_name }}
-                    tar -cJf ${{ github.ref_name }}.tar.xz ${{ github.ref_name }}
+                    tar -czf extension.tar.gz extensionsystem
+                    tar -cJf extension.tar.xz extensionsystem
 
             - uses: softprops/action-gh-release@v1
               with:
                 files: |
-                    ${{ github.ref_name }}.tar.gz
-                    ${{ github.ref_name }}.tar.xz
+                    extension.tar.gz
+                    extension.tar.xz
                 
