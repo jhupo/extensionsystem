@@ -9,13 +9,11 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
-            - name: build_boost_thirdparty
+
+            - name: extension_init_git_submodules
               run: |
+                    git submodule update --remote
                     git submodule update --init --recursive
-                    cd thirdparty/boost
-                    bash bootstrap.sh
-                    ./b2 -j4
-                    ./b2 install
 
             - name: build_jsoncpp_thirdparty
               run: |
@@ -25,6 +23,13 @@ jobs:
                     cmake ..
                     make -j
                     make install
+
+            - name: build_boost_thirdparty
+              run: |
+                    cd thirdparty/boost
+                    bash bootstrap.sh
+                    ./b2 -j4
+                    ./b2 install
 
             - name: set_thirdparty_env
               run: |
@@ -36,5 +41,20 @@ jobs:
                     cd build
                     cmake ..
                     make
-                
+
+            - name: extension_cleanup
+              shell: bash
+              run: |
+                    find ${{ github.ref_name }} -name ".git" -prune -exec rm -rf {} +
+
+            - name: create_extension_tar_files
+              run: |
+                    tar -czf ${{ github.ref_name }}.tar.gz ${{ github.ref_name }}
+                    tar -cJf ${{ github.ref_name }}.tar.xz ${{ github.ref_name }}
+
+            - uses: softprops/action-gh-release@v1
+              with:
+                files: |
+                    ${{ github.ref_name }}.tar.gz
+                    ${{ github.ref_name }}.tar.xz
                 
