@@ -42,10 +42,10 @@ jobs:
             #         cmake ..
             #         make
 
-            - name: extension_cleanup
-              shell: bash
-              run: |
-                    find ${{ github.ref_name }} -name ".git" -prune -exec rm -rf {} +
+            # - name: extension_cleanup
+            #   shell: bash
+            #   run: |
+            #         find ${{ github.ref_name }} -name ".git" -prune -exec rm -rf {} +
 
             - name: create_extension_tar_files
               run: |
