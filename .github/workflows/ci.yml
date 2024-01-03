@@ -10,52 +10,51 @@ jobs:
         steps:
             - uses: actions/checkout@v3
 
-            # - name: extension_init_git_submodules
-            #   run: |
-            #         git submodule update --remote
-            #         git submodule update --init --recursive
+            - name: extension_init_git_submodules
+              run: |
+                    git submodule update --remote
+                    git submodule update --init --recursive
 
-            # - name: build_jsoncpp_thirdparty
-            #   run: |
-            #         cd thirdparty/jsoncpp
-            #         mkdir build
-            #         cd build
-            #         cmake ..
-            #         make -j
-            #         make install
+            - name: build_jsoncpp_thirdparty
+              run: |
+                    cd thirdparty/jsoncpp
+                    mkdir build
+                    cd build
+                    cmake ..
+                    make -j
+                    make install
 
-            # - name: build_boost_thirdparty
-            #   run: |
-            #         cd thirdparty/boost
-            #         bash bootstrap.sh
-            #         ./b2 -j4
-            #         ./b2 install
+            - name: build_boost_thirdparty
+              run: |
+                    cd thirdparty/boost
+                    bash bootstrap.sh
+                    ./b2 -j4
+                    ./b2 install
 
-            # - name: set_thirdparty_env
-            #   run: |
-            #         export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
-            #         export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64
+            - name: set_thirdparty_env
+              run: |
+                    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+                    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64
 
-            # - name: build_extension_system
-            #   run: |
-            #         cd build
-            #         cmake ..
-            #         make
+            - name: build_extension_system
+              run: |
+                    cd build
+                    cmake ..
+                    make
 
-            # - name: extension_cleanup
-            #   shell: bash
-            #   run: |
-            #         find ${{ github.ref_name }} -name ".git" -prune -exec rm -rf {} +
+            - name: extension_cleanup
+              shell: bash
+              run: |
+                    find ${{ github.ref_name }} -name ".git" -prune -exec rm -rf {} +
 
             - name: create_extension_tar_files
               run: |
-                    cd ..
-                    tar -czf extension.tar.gz extensionsystem
-                    tar -cJf extension.tar.xz extensionsystem
+                    tar -czf ${{ github.ref_name }}.tar.gz ${{ github.ref_name }}
+                    tar -cJf ${{ github.ref_name }}.tar.xz ${{ github.ref_name }}
 
             - uses: softprops/action-gh-release@v1
               with:
                 files: |
-                    extension.tar.gz
-                    extension.tar.xz
+                    ${{ github.ref_name }}.tar.gz
+                    ${{ github.ref_name }}.tar.xz
                 
