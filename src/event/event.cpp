@@ -37,7 +37,8 @@ namespace extension{
 
     
         Event::Event(const int64_t &id, const BasicVariant &data)
-            : d_ptr(new EventPrivate(this,id,data))
+            : basic_variant_format_t(id)
+            , d_ptr(new EventPrivate(this,id,data))
         {
 
         }

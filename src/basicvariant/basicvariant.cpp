@@ -1,4 +1,5 @@
 #include <basicvariant/basicvariant.h>
+#include <logger/logger.h>
 
 #include <iostream>
 
@@ -16,9 +17,6 @@ namespace extension{
                 template<typename T, typename U>
                 bool operator()(const T& _1, const U& _2)const{
                     return false;
-                }
-                bool operator()(const basic_variant_format_t& _1, const basic_variant_format_t& _2)const{
-                    return _1 == _2;
                 }
                 bool operator()(const char* _1, const char* _2)const{
                     return strcmp(_1,_2) == 0;
@@ -89,6 +87,12 @@ namespace extension{
 
         BasicVariant::BasicVariant()
             : variant_t(basic_variant_null)
+        {
+
+        }
+
+        BasicVariant::BasicVariant(void* var)
+            : variant_t(static_cast<void*>(var))
         {
 
         }
@@ -177,12 +181,6 @@ namespace extension{
 
         }
 
-        BasicVariant::BasicVariant(const basic_variant_format_t& var)
-            : variant_t(var)
-        {
-
-        }
-
         BasicVariant::BasicVariant(const variant_t &var)
             : variant_t(var)
         {
@@ -219,6 +217,11 @@ namespace extension{
             return variant_null == var.which() && NULL == boost::get<void*>(var);
         }
 
+        BasicVariant::VariantType BasicVariant::variant_type()const
+        {
+            return static_cast<BasicVariant::VariantType>(which());
+        }
+
         template<>
         void* BasicVariant::variant_value<void*>(const BasicVariant &var)
         {
@@ -238,7 +241,6 @@ namespace extension{
             case variant_double:{return (void*)&boost::get<double>(var);}
             case variant_string:{return (void*)&boost::get<std::string>(var);}
             case variant_bool:{return (void*)&boost::get<bool>(var);}
-            case variant_format:{return (void*)&boost::get<basic_variant_format_t>(var);}
             default:
                 break;
             }
@@ -277,7 +279,7 @@ namespace extension{
             }else if(variant_string == var.which()){
                 return const_cast<char*>(boost::get<std::string>(var).c_str());
             }
-            return nullptr;
+            return NULL;
         }
 
         template<>
@@ -290,7 +292,7 @@ namespace extension{
             }else if(variant_string == var.which()){
                 return reinterpret_cast<unsigned char*>(const_cast<char*>(boost::get<std::string>(var).c_str()));
             }
-            return nullptr;
+            return NULL;
         }
 
         template<>
@@ -487,21 +489,64 @@ namespace extension{
             case variant_double:{return 0 != boost::get<double>(var);}  
             case variant_string:{return !boost::get<std::string>(var).empty();}
             case variant_bool:{return boost::get<bool>(var);}
-            case variant_format:{return sizeof(boost::get<basic_variant_format_t>(var)) > 1;}
             default:
                 break;
             }
             return false;
         }
 
-        template<>
-        basic_variant_format_t BasicVariant::variant_value<basic_variant_format_t>(const BasicVariant& var)
+        bool BasicVariant::operator==(const BasicVariant& var)const
         {
-            if(variant_format == var.which()){
-                return boost::get<basic_variant_format_t>(var);
-            }
-            return basic_variant_format_t();
+            return variant_equal_apply_visitor(*this,var);
         }
+
+        bool BasicVariant::operator<(const BasicVariant& var)const
+        {
+            if(var.variant_type() != this->variant_type()){
+                return false;
+            }
+            switch (var.variant_type())
+            {
+            case variant_char:{return boost::get<char>(*this) < boost::get<char>(var);}
+            case variant_uchar:{return boost::get<unsigned char>(*this) < boost::get<unsigned char>(var);}
+            case variant_char_ptr:{return strcmp(boost::get<char*>(*this),boost::get<char*>(var)) < 0;}
+            case variant_uchar_ptr:{return strcmp((const char*)boost::get<unsigned char*>(*this),(const char*)boost::get<unsigned char*>(var)) < 0;}
+            case variant_short:{return boost::get<short>(*this) < boost::get<short>(var);}
+            case variant_ushort:{return boost::get<unsigned short>(*this) < boost::get<unsigned short>(var);}
+            case variant_int:{return boost::get<int>(*this) < boost::get<int>(var);}
+            case variant_uint:{return boost::get<unsigned int>(*this) < boost::get<unsigned int>(var);}
+            case variant_long:{return boost::get<long>(*this) < boost::get<long>(var);}
+            case variant_ulong:{return boost::get<unsigned long>(*this) < boost::get<unsigned long>(var);}
+            case variant_float:{return boost::get<float>(*this) < boost::get<float>(var);}
+            case variant_double:{return boost::get<double>(*this) < boost::get<double>(var);}
+            case variant_string:{return boost::get<std::string>(*this) < boost::get<std::string>(var);}
+            case variant_bool:{return boost::get<bool>(*this) < boost::get<bool>(var);}
+            default:break;
+            }
+            return true;
+        }
+
+        basic_variant_format_t::basic_variant_format_t(const BasicVariant& var)
+            : _var(var)
+        {
+
+        }
+
+        basic_variant_format_t::~basic_variant_format_t()
+        {
+
+        }
+
+        BasicVariant basic_variant_format_t::variant() const
+        {
+            return _var;
+        }
+
+        void basic_variant_format_t::setVariant(const BasicVariant &var)
+        {
+            _var = var;
+        }
+
 
     }
 }

@@ -9,24 +9,20 @@ namespace extension{
 
     namespace core{
 
-        struct EXTENSION_EXPORT basic_variant_format_t
-        {
-            bool operator==(const basic_variant_format_t& other) const {
-                return true;
-            }
-        };
+        class basic_variant_format_t;
 
         typedef boost::variant<void*,char,unsigned char,char*,unsigned char*,
-                               short,unsigned short,int,unsigned int,long,
-                               unsigned long,float,double,std::string,bool,basic_variant_format_t> variant_t;
+                                short,unsigned short,int,unsigned int,long,
+                                unsigned long,float,double,std::string,bool> variant_t;
 
         class EXTENSION_EXPORT BasicVariant : public variant_t
         {
         public:
-            enum{variant_null,variant_char,variant_uchar,variant_char_ptr,variant_uchar_ptr,
-                 variant_short,variant_ushort,variant_int,variant_uint,variant_long,variant_ulong,
-                 variant_float,variant_double,variant_string,variant_bool,variant_format};
+            enum VariantType{variant_null,variant_char,variant_uchar,variant_char_ptr,variant_uchar_ptr,
+                    variant_short,variant_ushort,variant_int,variant_uint,variant_long,variant_ulong,
+                    variant_float,variant_double,variant_string,variant_bool,variant_format};
             BasicVariant();
+            BasicVariant(void* var);
             BasicVariant(const char& var);
             BasicVariant(const unsigned char& var);
             BasicVariant(const char* var);
@@ -41,7 +37,6 @@ namespace extension{
             BasicVariant(const double& var);
             BasicVariant(const std::string& var);
             BasicVariant(const bool& var);
-            BasicVariant(const basic_variant_format_t& var);
             BasicVariant(const variant_t& var);
             virtual~BasicVariant();
 
@@ -54,6 +49,8 @@ namespace extension{
                 return variant_value<T>(*this);
             }
 
+            VariantType variant_type()const;
+
         public:
 
             static bool variant_equal_apply_visitor(const BasicVariant& _1, const BasicVariant& _2);
@@ -64,6 +61,9 @@ namespace extension{
             static T variant_value(const BasicVariant& var){
                 throw std::runtime_error("Not implemented");
             }
+        public:
+            bool operator<(const BasicVariant& var)const;
+            bool operator==(const BasicVariant& var)const;
         };
 
 #define basic_variant_null variant_t((void*)NULL)
@@ -96,11 +96,29 @@ namespace extension{
         std::string BasicVariant::variant_value<std::string>(const BasicVariant& var);
         template<>
         bool BasicVariant::variant_value<bool>(const BasicVariant& var);
-        template<>
-        basic_variant_format_t BasicVariant::variant_value<basic_variant_format_t>(const BasicVariant& var);
+
+        class EXTENSION_EXPORT basic_variant_format_t
+        {
+        public:
+            basic_variant_format_t(const BasicVariant& var);
+            virtual~basic_variant_format_t();
+            void setVariant(const BasicVariant& var);
+            BasicVariant variant()const;
+            template<unsigned short,typename T, typename U>
+            class EXTENSION_EXPORT Formatter
+            { 
+            public:
+                int deserialize(const T&, U& )
+                {throw std::runtime_error("Not implemented");}
+                int serialize(T&, const U&)
+                {throw std::runtime_error("Not implemented");}
+            };
+        private:
+            BasicVariant        _var;
+        };
     }
 
 }
-
+typedef extension::core::basic_variant_format_t VariantFormatter;
 
 #endif
