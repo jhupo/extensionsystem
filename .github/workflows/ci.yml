@@ -24,12 +24,14 @@ jobs:
                     make -j
                     make install
 
-            - name: build_boost_thirdparty
+            - name: build_yaml_thirdparty
               run: |
-                    cd thirdparty/boost
-                    bash bootstrap.sh
-                    ./b2 -j4
-                    ./b2 install
+                    cd thirdparty/yaml
+                    mkdir build
+                    cd build
+                    cmake ..
+                    make -j
+                    make install
 
             - name: set_thirdparty_env
               run: |

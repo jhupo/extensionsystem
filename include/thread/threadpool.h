@@ -2,7 +2,6 @@
 #define __EXTENSION_THREADPOOL_H__
 
 #include <extension_global.h>
-#include <basicvariant/basicvariant.h>
 
 #include <functional>
 
@@ -18,12 +17,12 @@ namespace extension{
             DECLARE_PRIVATE(ThreadPool)
         public:
 
-            typedef std::function<void(const BasicVariant&)> TaskCallback;
+            typedef std::function<void(void*)> TaskCallback;
 
             static ThreadPool* inst();
 
-            void addTask(const std::string& iid, const TaskCallback& call, const BasicVariant& var = basic_variant_null);
-            bool tryStartTask(const TaskCallback& call, const BasicVariant& var = basic_variant_null);
+            void addTask(const std::string& iid, const TaskCallback& call, void* var = nullptr);
+            bool tryStartTask(const TaskCallback& call, void* var = nullptr);
             
             void clear();
             void cancel(const std::string& iid);

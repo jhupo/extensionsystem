@@ -47,13 +47,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(thirdparty_libs 
-                    boost_chrono 
-                    boost_thread 
-                    boost_log 
-                    boost_log_setup  
-                    boost_regex 
-                    boost_filesystem 
                     jsoncpp
+                    yaml
                     m
                     dl
                     pthread)
