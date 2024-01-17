@@ -1,6 +1,6 @@
 [submodule "thirdparty/yaml-cpp"]
-    path = thirdparty/yaml-cpp
-    url = https://github.com/jbeder/yaml-cpp.git
+	path = thirdparty/yaml-cpp
+	url = https://github.com/jbeder/yaml-cpp.git
 [submodule "thirdparty/jsoncpp"]
 	path = thirdparty/jsoncpp
 	url = https://github.com/open-source-parsers/jsoncpp.git
