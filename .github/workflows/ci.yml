@@ -12,6 +12,7 @@ jobs:
 
             - name: extension_init_git_submodules
               run: |
+                    echo ${{github.workspace}}
                     git submodule update --remote
                     git submodule update --init --recursive
 
@@ -20,7 +21,7 @@ jobs:
                   cd thirdparty/yaml-cpp
                   mkdir build
                   cd build
-                  cmake -DCMAKE_INSTALL_PREFIX=./local ..
+                  cmake -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/local ..
                   make -j
                   make install
 
@@ -29,7 +30,7 @@ jobs:
                     cd thirdparty/jsoncpp
                     mkdir build
                     cd build
-                    cmake -DCMAKE_INSTALL_PREFIX=./local ..
+                    cmake -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/local ..
                     make -j
                     make install
 
@@ -38,12 +39,13 @@ jobs:
                     cd thirdparty/boost
                     bash bootstrap.sh
                     ./b2 -j4
-                    ./b2 install --prefix=./local
+                    ./b2 install --prefix=${{github.workspace}}/local
+                    
 
             - name: set_thirdparty_env
               run: |
-                    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./local/lib
-                    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./local/lib64
+                    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${{github.workspace}}/local/lib
+                    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${{github.workspace}}/local/lib64
 
             - name: build_extension_system
               run: |
