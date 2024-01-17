@@ -27,18 +27,18 @@ jobs:
                     cd thirdparty/jsoncpp
                     mkdir build
                     cd build
-                    cmake ..
+                    cmake -DCMAKE_INSTALL_PREFIX=./local ..
                     make -j
-                    make install --prefix=./local
+                    make install
 
             - name: build_yaml_thirdparty
               run: |
                     cd thirdparty/yaml
                     mkdir build
                     cd build
-                    cmake ..
+                    cmake -DCMAKE_INSTALL_PREFIX=./local ..
                     make -j
-                    make install --prefix=./local
+                    make install
 
             - name: set_thirdparty_env
               run: |
@@ -49,6 +49,7 @@ jobs:
               run: |
                     cd build
                     cmake ..
+                    make -j
                     make
 
             - name: extension_cleanup
