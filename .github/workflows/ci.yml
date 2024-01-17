@@ -15,12 +15,14 @@ jobs:
                     git submodule update --remote
                     git submodule update --init --recursive
 
-            - name: build_boost_thirdparty
+            - name: build_yaml_thirdparty
               run: |
-                    cd thirdparty/boost
-                    bash bootstrap.sh
-                    ./b2 -j4
-                    ./b2 install --prefix=./local
+                  cd thirdparty/yaml
+                  mkdir build
+                  cd build
+                  cmake -DCMAKE_INSTALL_PREFIX=./local ..
+                  make -j
+                  make install
 
             - name: build_jsoncpp_thirdparty
               run: |
@@ -31,14 +33,12 @@ jobs:
                     make -j
                     make install
 
-            - name: build_yaml_thirdparty
+            - name: build_boost_thirdparty
               run: |
-                    cd thirdparty/yaml
-                    mkdir build
-                    cd build
-                    cmake -DCMAKE_INSTALL_PREFIX=./local ..
-                    make -j
-                    make install
+                    cd thirdparty/boost
+                    bash bootstrap.sh
+                    ./b2 -j4
+                    ./b2 install --prefix=./local
 
             - name: set_thirdparty_env
               run: |

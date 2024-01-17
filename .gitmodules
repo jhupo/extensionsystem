@@ -1,9 +1,10 @@
-[submodule "thirdparty/boost"]
-	path = thirdparty/boost
-	url = https://github.com/boostorg/boost.git
 [submodule "thirdparty/yaml"]
 	path = thirdparty/yaml
 	url = https://github.com/jbeder/yaml-cpp.git
 [submodule "thirdparty/jsoncpp"]
 	path = thirdparty/jsoncpp
 	url = https://github.com/open-source-parsers/jsoncpp.git
+[submodule "thirdparty/boost"]
+	path = thirdparty/boost
+	url = https://github.com/boostorg/boost.git
+
