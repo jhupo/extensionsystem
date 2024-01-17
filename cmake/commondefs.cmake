@@ -46,9 +46,14 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+add_definitions(-DBOOST_LOG_DYN_LINK)
+add_definitions(-DJSON_DLL_BUILD)
+
 set(thirdparty_libs 
+                    boost_log 
+                    boost_log_setup
                     jsoncpp
-                    yaml
+                    yaml-cpp
                     m
                     dl
                     pthread)

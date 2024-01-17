@@ -36,7 +36,7 @@ template <typename Wrapper> static inline typename Wrapper::element_type* GetPtr
 #define DECLARE_SHARED_PTR(Class)   \
     public: \
         typedef std::shared_ptr<Class> ptr; \
-        typedef std::shared_ptr<const Class> const_ptr; \
+        typedef std::weak_ptr<Class> weak_ptr; \
     private:
 
 #if (defined(__unix__) || defined(_WIN32)) && (defined(__GNUC__) || defined(__clang__))

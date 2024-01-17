@@ -15,6 +15,13 @@ jobs:
                     git submodule update --remote
                     git submodule update --init --recursive
 
+            - name: build_boost_thirdparty
+              run: |
+                    cd thirdparty/boost
+                    bash bootstrap.sh
+                    ./b2 -j4
+                    ./b2 install --prefix=./local
+
             - name: build_jsoncpp_thirdparty
               run: |
                     cd thirdparty/jsoncpp
@@ -22,7 +29,7 @@ jobs:
                     cd build
                     cmake ..
                     make -j
-                    make install
+                    make install --prefix=./local
 
             - name: build_yaml_thirdparty
               run: |
@@ -31,12 +38,12 @@ jobs:
                     cd build
                     cmake ..
                     make -j
-                    make install
+                    make install --prefix=./local
 
             - name: set_thirdparty_env
               run: |
-                    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
-                    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64
+                    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./local/lib
+                    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./local/lib64
 
             - name: build_extension_system
               run: |
