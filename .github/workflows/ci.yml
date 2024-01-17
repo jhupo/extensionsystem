@@ -17,7 +17,7 @@ jobs:
 
             - name: build_yaml_thirdparty
               run: |
-                  cd thirdparty/yaml
+                  cd thirdparty/yaml-cpp
                   mkdir build
                   cd build
                   cmake -DCMAKE_INSTALL_PREFIX=./local ..
