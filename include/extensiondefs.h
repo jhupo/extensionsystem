@@ -54,4 +54,18 @@ template <typename Wrapper> static inline typename Wrapper::element_type* GetPtr
 #endif
 
 
+
+namespace extension{
+template<typename T>
+class DECL_EXPORT Singleton\
+{\
+DISABLE_COPY(Singleton)\
+public:\
+static T* inst(){static T v;return &v;}\
+};
+}
+
+#define DECLARE_SINGLETON(Class,Inst)\
+    typedef extension::Singleton<Class> Inst
+
 #endif

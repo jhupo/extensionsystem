@@ -7,45 +7,40 @@
 
 namespace extension{
 
-    namespace core{
+    class ThreadPoolPrivate;
 
-        class ThreadPoolPrivate;
+    class EXTENSION_EXPORT ThreadPool 
+    {
+        DISABLE_COPY(ThreadPool)
+        DECLARE_PRIVATE(ThreadPool)
+    public:
 
-        class EXTENSION_EXPORT ThreadPool 
-        {
-            DISABLE_COPY(ThreadPool)
-            DECLARE_PRIVATE(ThreadPool)
-        public:
+        typedef std::function<void(void*)> TaskCallback;
 
-            typedef std::function<void(void*)> TaskCallback;
+        void addTask(const std::string& iid, const TaskCallback& call, void* args = nullptr);
+        bool tryStartTask(const TaskCallback& call, void* args = nullptr);
+        
+        void clear();
+        void cancel(const std::string& iid);
 
-            static ThreadPool* inst();
+        int expiryTimeout() const;
+        void setExpiryTimeout(int expiryTimeout);
 
-            void addTask(const std::string& iid, const TaskCallback& call, void* var = nullptr);
-            bool tryStartTask(const TaskCallback& call, void* var = nullptr);
-            
-            void clear();
-            void cancel(const std::string& iid);
+        int maxThreadCount() const;
+        void setMaxThreadCount(int maxThreadCount);
 
-            int expiryTimeout() const;
-            void setExpiryTimeout(int expiryTimeout);
+        int activeThreadCount() const;
 
-            int maxThreadCount() const;
-            void setMaxThreadCount(int maxThreadCount);
+        bool waitForDone(int msecs = -1);
 
-            int activeThreadCount() const;
+        ThreadPool();
+        virtual~ThreadPool();
 
-            bool waitForDone(int msecs = -1);
+    private:
+        const std::shared_ptr<ThreadPoolPrivate>              d_ptr;
+    };
 
-            ThreadPool();
-            virtual~ThreadPool();
-
-        private:
-            const std::shared_ptr<ThreadPoolPrivate>              d_ptr;
-        };
-
-    }
-
+    DECLARE_SINGLETON(ThreadPool,ThreadPoolManager);
 }
 
 
