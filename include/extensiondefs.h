@@ -53,19 +53,22 @@ template <typename Wrapper> static inline typename Wrapper::element_type* GetPtr
 #  define PLUGIN_METADATA_SECTION
 #endif
 
+#ifndef EXTERN_C
+#  ifdef __cplusplus
+#    define EXTERN_C extern "C"
+#  else
+#    define EXTERN_C extern
+#  endif
+#endif
 
-
-namespace extension{
-template<typename T>
-class DECL_EXPORT Singleton\
+#define DECLARE_PLUGIN_INSTANCE(Class)\
+EXTERN_C DECL_EXPORT extension::Plugin *plugin_instance() \
 {\
-DISABLE_COPY(Singleton)\
-public:\
-static T* inst(){static T v;return &v;}\
-};
+    static extension::Plugin * inst = nullptr;\
+    if(!inst)\
+        inst = new Class;\
+    return inst;\
 }
 
-#define DECLARE_SINGLETON(Class,Inst)\
-    typedef extension::Singleton<Class> Inst
 
 #endif

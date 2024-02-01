@@ -1,5 +1,6 @@
 #include <thread/thread.h>
 #include <logger/logger.h>
+#include <utils/extensionutils.h>
 
 #include <mutex>
 #include <thread>
@@ -134,12 +135,12 @@ namespace extension{
 
     std::string Thread::this_thread_name()
     {
-        return std::string();
+        return this_thread::this_thread_name();
     }
 
     void Thread::set_this_thread_name(const std::string& name)
     {
-        UNUSED(name);
+        this_thread::set_this_thread_name(name);
     }
 
 

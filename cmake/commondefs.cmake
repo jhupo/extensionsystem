@@ -6,6 +6,9 @@ set(top_include_dir ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(top_srcdir ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(top_examples ${CMAKE_CURRENT_SOURCE_DIR}/examples)
 
+set(top_thirdparty_include_dir "/usr/local/include")
+set(top_thirdparty_library_dir "/usr/local/lib;/usr/local/lib64")
+
 function(search_file dir result)
     file(GLOB_RECURSE __FILES_TARGET__
         "${dir}/*.hpp"

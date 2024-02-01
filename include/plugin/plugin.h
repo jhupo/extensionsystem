@@ -5,47 +5,41 @@
 
 
 namespace extension{
-    namespace core{
 
-        struct ObjectSmartDeleter;
-        class PluginSpec;
-        class PluginPrivate;
+    class PluginSpec;
+    class PluginPrivate;
 
-        class EXTENSION_EXPORT Plugin
-        {
-            DISABLE_COPY(Plugin)
-            DECLARE_PRIVATE(Plugin)
-        public:
+    class EXTENSION_EXPORT Plugin
+    {
+        DISABLE_COPY(Plugin)
+        DECLARE_PRIVATE(Plugin)
+    public:
 
-            enum ShutdownFlag{SynchronousShutdown, AsynchronousShutdown};
+        enum ShutdownFlag{SynchronousShutdown, AsynchronousShutdown};
 
-            Plugin();
-            virtual~Plugin();
+        Plugin();
+        virtual~Plugin();
 
-            virtual void initialize() = 0;
+        virtual void initialize() = 0;
 
-            virtual void extensionsInitialized() = 0;
+        virtual void extensionsInitialized() = 0;
 
-            virtual bool delayedInitialize() { return false; }
+        virtual bool delayedInitialize() { return false; }
 
-            virtual ShutdownFlag aboutToShutdown() { return SynchronousShutdown; }
+        virtual ShutdownFlag aboutToShutdown() { return SynchronousShutdown; }
 
-            template<typename T = ObjectSmartDeleter>
-            void addObject(const std::string& name, void *obj, T& smart = ObjectSmartDeleter());
-            template<typename T = ObjectSmartDeleter>
-            void addAutoReleasedObject(const std::string& name, void *obj, T& smart);
+        void addObject(void *obj);
 
-            void removeObject(void *obj);
-            void removeObject(const std::string& name);
+        void addAutoReleasedObject(void *obj);
 
-            PluginSpec *pluginSpec() const;
+        void removeObject(void *obj);
 
-        private:
-            const std::shared_ptr<PluginPrivate> d_ptr;
-        };
+        PluginSpec *pluginSpec() const;
 
+    private:
+        const std::shared_ptr<PluginPrivate> d_ptr;
+    };
 
-    }
 }
 
 #endif

@@ -65,10 +65,11 @@ namespace extension{
     };
 
     ThreadPoolThread::ThreadPoolThread(ThreadPoolPrivate* manager)
-        : _manager(manager)
+        : Thread("ThreadPool")
+        , _manager(manager)
         , _task(nullptr)
     {
-
+        
     }
 
     ThreadPoolThread::~ThreadPoolThread()
@@ -175,7 +176,6 @@ namespace extension{
                 _variable.wait(locker);
             }
         }else{
-            // boost::posix_time::ptime timer = boost::posix_time::microsec_clock::universal_time();
             std::chrono::_V2::steady_clock::time_point timer = std::chrono::steady_clock::now();
             int t;
             while (!(_tasks.empty() && _activeThreads == 0) &&

@@ -11,6 +11,9 @@ add_definitions(-DEXTENSION_LIBRARY)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${top_binary_dir})
 
 include_directories(${top_include_dir})
+include_directories(${top_thirdparty_include_dir})
+
+link_directories(${top_thirdparty_lib_dir})
 
 search_file(${top_srcdir} TARGET_FILES)
 

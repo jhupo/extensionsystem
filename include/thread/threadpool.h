@@ -2,6 +2,7 @@
 #define __EXTENSION_THREADPOOL_H__
 
 #include <extension_global.h>
+#include <utils/extensionutils.h>
 
 #include <functional>
 
@@ -13,6 +14,7 @@ namespace extension{
     {
         DISABLE_COPY(ThreadPool)
         DECLARE_PRIVATE(ThreadPool)
+        DECLARE_SHARED_PTR(ThreadPool)
     public:
 
         typedef std::function<void(void*)> TaskCallback;
@@ -40,7 +42,7 @@ namespace extension{
         const std::shared_ptr<ThreadPoolPrivate>              d_ptr;
     };
 
-    DECLARE_SINGLETON(ThreadPool,ThreadPoolManager);
+    DECLARE_SINGLETON(ThreadPool);
 }
 
 
