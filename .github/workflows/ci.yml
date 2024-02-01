@@ -45,6 +45,7 @@ jobs:
 
             - name: create_extension_tar_files
               run: |
+                    cd
                     tar -czf ${{ github.ref_name }}.tar.gz ${{ github.workspace }}
                     tar -cJf ${{ github.ref_name }}.tar.xz ${{ github.workspace }}
 
