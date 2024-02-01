@@ -41,22 +41,5 @@ jobs:
               run: |
                     cd build
                     cmake ..
-                    make -j
                     make
-
-            - name: extension_cleanup
-              shell: bash
-              run: |
-                    find ${{ github.ref_name }} -name ".git" -prune -exec rm -rf {} +
-
-            - name: create_extension_tar_files
-              run: |
-                    tar -czf ${{ github.ref_name }}.tar.gz ${{ github.ref_name }}
-                    tar -cJf ${{ github.ref_name }}.tar.xz ${{ github.ref_name }}
-
-            - uses: softprops/action-gh-release@v1
-              with:
-                files: |
-                    ${{ github.ref_name }}.tar.gz
-                    ${{ github.ref_name }}.tar.xz
                 
