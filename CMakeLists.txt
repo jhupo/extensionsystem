@@ -21,4 +21,4 @@ add_library(${project_name} SHARED ${TARGET_FILES})
 
 target_link_libraries(${project_name} ${thirdparty_libs})
 
-add_subdirectory(${top_examples})
+#add_subdirectory(${top_examples})
